@@ -1,0 +1,11 @@
+# MATLAB Workspace Files
+*.mat
+
+# Simulink Code Generation
+slprj/
+
+# Simulink autosave extension
+*.autosave
+
+# Simulink Cache File (build artifacts)
+*.slxc
