@@ -2,7 +2,7 @@ clc; clear; close all;
 
 %% Chosen parameters
 
-weight = true;
+weight = false;
 
 %% Load constant conversion parameters
 
