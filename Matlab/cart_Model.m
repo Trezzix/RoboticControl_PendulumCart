@@ -1,4 +1,5 @@
 clc; clear; close all;
+% Thomas Lønne Stiansen - FHV Winter Semester 2025
 
 %% Chosen parameters
 
@@ -60,7 +61,8 @@ B_eq = ( (eta_g * K_g^2 * eta_m * k_t * k_m) + (B_c * r_mp^2 * R_m) ) / ...
 % Equivalent Inertia
 J_eq = M + ( eta_g * K_g^2 * J_m ) / (r_mp^2 );
 
-% Transfer Function
+% Transfer Function ~ Simple 1st order
 K = Am/B_eq;
-tau = J_eq/B_eq;
+tau = J_eq/B_eq; % Including inertia due to rotating motor armature
 table(K, tau)
+
