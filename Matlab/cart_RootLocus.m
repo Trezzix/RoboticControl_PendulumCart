@@ -20,6 +20,7 @@ G_OL = G_cartPos;
 % IT_1 Block
 figure
 step(G_OL)
+title('Step Response: Open Loop')
 
 % Root Locus: only 1 pole, thus goes off to -∞
 figure
@@ -63,3 +64,4 @@ sgrid(zeta, omega_n)
 figure
 step(G_CL)
 stepinfo(G_CL)
+title('Step Response: Closed Loop')
