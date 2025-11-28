@@ -4,12 +4,17 @@ clc; clear; close all;
 % Constants
 markSize = 10;
 sign = -1; % for negative feedback
+ylims = 15;
 
 %% Root Locus
 
 % Loaded from cart_Model.m
-K = 0.143342010172210;
-tau = 0.058378523227571;
+    % With Weight
+        K = 0.131346246942449;
+        tau = 0.081642070282424;
+    % Without Weight
+        % K = 0.143342010172210;
+        % tau = 0.058378523227571;
 s = tf('s');
 G_cartVel = K / (tau*s + 1);   % G  =  V_c(s) / V_m(s)  =  [m/s] / [V]
     % Integrate to get position control
@@ -26,6 +31,7 @@ title('Step Response: Open Loop')
 figure
 rlocus(G_OL)
 title('Root Locus: Open Loop')
+ylim([-ylims ylims])
 
 %% Requirements
 
@@ -50,12 +56,14 @@ sgrid(zeta,omega_n);
 
 % Proportional
 % sysP = 5; % cartVel
-sysP = 40; % cartPos
+% sysP = 40; % cartPos - no weight
+sysP = 64; % cartPos - with weight
 G_CL = feedback( sysP*G_OL , 1, sign);
 
 figure
 rlocus(G_CL)
 title('Root Locus: Closed Loop')
+ylim([-ylims ylims])
     % pzmap(G_CL)
     % title('Pole-Zero Map: Closed Loop')
 sgrid(zeta, omega_n)
