@@ -48,9 +48,6 @@ omega_n = 4/(ts*zeta);
 
 % Instead of sgrid
 sgrid(zeta,omega_n);
-    % pzp.AxesStyle.GridVisible = "on";
-    % pzp.AxesStyle.GridDampingSpec = zeta;
-    % pzp.AxesStyle.GridFrequencySpec = omega_n;
 
 %% Controller
 
