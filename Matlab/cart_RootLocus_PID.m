@@ -110,7 +110,7 @@ K_PD = 20;
         % rlocus(G_CL, k)
         % title('Root Locus: Closed Loop')
     pzmap(G_CL)
-    title('Pole-Zero Map: Closed Loop')
+    title('Pole-Zero Map: PD Control')
     hold on
     sgrid(zeta, omega_n)
         plot(x, y1, '--k',  x, y2, '--k');
@@ -157,7 +157,7 @@ ylim([-yLims yLims])
 xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
-K_PID = 0.0105;
+K_PID = 0.8;
 
 %% Controller
 
@@ -169,8 +169,8 @@ G_CL = feedback( G_C*G_OL , 1, sign);
 figure
     % rlocus(G_CL, k)
     % title('Root Locus: Closed Loop')
-pzmap(G_C*G_OL)
-title('Pole-Zero Map: Open Loop - Controlled')
+pzmap(G_CL)
+title('Pole-Zero Map: PID Control')
 hold on
 sgrid(zeta, omega_n)
     plot(x, y1, '--k',  x, y2, '--k');
