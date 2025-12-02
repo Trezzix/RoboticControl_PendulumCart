@@ -1,5 +1,6 @@
 clc; clear; close all;
 % Thomas Lønne Stiansen - FHV Winter Semester 2025
+    % For P-control and testing simple Root Locus on cart
 
 % Constants
 markSize = 10;
@@ -27,7 +28,7 @@ figure
 step(G_OL)
 title('Step Response: Open Loop')
 
-% Root Locus: only 1 pole, thus goes off to -∞
+% Root Locus
 figure
 rlocus(G_OL)
 title('Root Locus: Open Loop')
