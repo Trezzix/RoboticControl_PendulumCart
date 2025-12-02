@@ -1,6 +1,6 @@
 clc; clear; close all;
 % Thomas Lønne Stiansen - FHV Winter Semester 2025
-    % For PID control with Root Locus on cart
+    % For PI control with Root Locus on cart
 
 % Constants
 markSize = 10;
@@ -69,53 +69,6 @@ ylim([-yLims yLims])
 xlim([xMin xMax])
 sgrid(zeta, omega_n)
 
-%% PD Design - Inspired by Lösung_11.pdf
-
-% Desired Poles
-p_w = - sigma_d + j*omega_d;
-
-% Poles of Plant
-p_i = pole(G_OL);
-
-% Angles of System Poles
-for i = 1 : length(p_i)
-    phi(i) = rad2deg( atan2( (imag(p_w) - imag(p_i(i)) ), ... % Δy
-                             (real(p_w) - real(p_i(i)) ) ) ); % Δx
-end
-% Required Angle
-phi_zD = 180 + sum(phi);
-
-% PD Zero
-z_D = omega_d / tand(phi_zD) + sigma_d;
-
-% PD Controller
-G_PD = (s + z_D);
-
-% Root Locus
-figure
-rlocus(G_OL * G_PD)
-hold on
-title('Root Locus: PD Design')
-sgrid(zeta,omega_n);
-    plot(x, y1, '--k',  x, y2, '--k');
-ylim([-yLims yLims])
-xlim([xMin xMax])
-
-%%% Selected from Root-Locus %%%
-% K_PD = 0.675;
-K_PD = 20;
-
-    G_CL = feedback( K_PD*G_PD * G_OL , 1, sign);
-    figure
-        % rlocus(G_CL, k)
-        % title('Root Locus: Closed Loop')
-    pzmap(G_CL)
-    title('Pole-Zero Map: Closed Loop')
-    hold on
-    sgrid(zeta, omega_n)
-        plot(x, y1, '--k',  x, y2, '--k');
-    ylim([-yLims yLims])
-    xlim([xMin xMax])
 
 %% PI Design - Inspired by Lösung_11.pdf
 
@@ -129,7 +82,7 @@ end
 figure;
 Legend = cell(length(z_I),1);
 for i = 1 : length(z_I)
-    step( feedback(G_PD*G_PI(i)*G_OL, 1, -1) );
+    step( feedback(G_PI(i)*G_OL, 1, -1) );
     axis([0 10 0 1.25]);
     Legend{i} = strcat('z_c = ', num2str(z_I(i)));
     hold on;
@@ -142,43 +95,37 @@ yline(0.95, '--k')
 %%% Selected from Response %%%
 z_I_idx = 2;
 
-%% Combined
-
-G_c = ( K_PD*G_PD * G_PI(z_I_idx) );
-
 % Root Locus
 figure
-rlocus(G_OL * G_c, k)
-hold on
-title('Root Locus: PID Design')
-sgrid(zeta, omega_n)
-    plot(x, y1, '--k',  x, y2, '--k');
+rlocus(G_OL * G_PI(z_I_idx))
+title('Root Locus: Open Loop')
 ylim([-yLims yLims])
 xlim([xMin xMax])
-
-%%% Selected from Root-Locus %%%
-K_PID = 0.0105;
-
-%% Controller
-
-G_C = K_PID * G_c;
-
-% Proportional
-G_CL = feedback( G_C*G_OL , 1, sign);
-
-figure
-    % rlocus(G_CL, k)
-    % title('Root Locus: Closed Loop')
-pzmap(G_C*G_OL)
-title('Pole-Zero Map: Open Loop - Controlled')
-hold on
 sgrid(zeta, omega_n)
-    plot(x, y1, '--k',  x, y2, '--k');
-ylim([-yLims yLims])
-xlim([xMin xMax])
 
-% Plot time response
-figure
-step(G_CL)
-stepinfo(G_CL)
-title('Step Response: Closed Loop')
+% 
+% K_PI
+
+% %% Controller
+% 
+% G_C = K_PI * G_c;
+% 
+% % Proportional
+% G_CL = feedback( G_C*G_OL , 1, sign);
+% 
+% figure
+%     % rlocus(G_CL, k)
+%     % title('Root Locus: Closed Loop')
+% pzmap(G_C*G_OL)
+% title('Pole-Zero Map: Open Loop - Controlled')
+% hold on
+% sgrid(zeta, omega_n)
+%     plot(x, y1, '--k',  x, y2, '--k');
+% ylim([-yLims yLims])
+% xlim([xMin xMax])
+% 
+% % Plot time response
+% figure
+% step(G_CL)
+% stepinfo(G_CL)
+% title('Step Response: Closed Loop')
