@@ -87,7 +87,7 @@ phi_zD = 180 + sum(phi);
 
 % PD Zero
 z_D = omega_d / tand(phi_zD) + sigma_d;
-z_D = 20;
+    z_D = 25;
 
 % PD Controller
 % G_PD = (s + z_D);
@@ -106,7 +106,7 @@ xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
 % K_PD = 20;
-K_PD = 1.75;
+K_PD = 1.4;
 
     % Pole Zero Map of PD Control
     G_CL = feedback( K_PD*G_PD * G_OL , 1, sign);
@@ -123,7 +123,7 @@ K_PD = 1.75;
 
 % Zero Selection
 z_I = [0.3 1 2 4];
-for i=1:length(z_I)
+for i = 1 : length(z_I)
     G_PI(i) = ( s + z_I(i) ) / s;
 end
 
@@ -142,7 +142,7 @@ yline(1.05, '--k')
 yline(0.95, '--k')
 
 %%% Selected from Response %%%
-z_I_idx = 3;
+z_I_idx = 4;
 
 %% Combined
 
@@ -150,7 +150,7 @@ G_c = ( K_PD*G_PD * G_PI(z_I_idx) );
 
 % Root Locus
 figure
-rlocus(G_OL * G_c, k)
+rlocus(G_OL * G_c)
 hold on
 title('Root Locus: PID Design')
 sgrid(zeta, omega_n)
@@ -159,7 +159,7 @@ ylim([-yLims yLims])
 xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
-K_PID = 1.21;
+K_PID = 42.5;
 
 %% Controller
 
