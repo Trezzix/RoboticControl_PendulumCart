@@ -5,7 +5,7 @@ clc; clear; close all;
 
 weight = true;
 
-%% Load constant conversion parameters
+%% Load constant conversion parameters - Quanser
 
 % from radians to degrees
 K_R2D = 180 / pi;
@@ -24,7 +24,8 @@ K_OZ2N = 0.2780139;
 % from N to oz-force
 K_N2OZ = 1 / K_OZ2N;
 
-%% Load parameters
+%% Load parameters - Quanser
+
 R_m = 2.6; % [ohm] Motor armature resistance
 L_m = 180e-6; % [H] Motor armature Inductance
 k_t = 1.088 * K_OZ2N * K_IN2M; % [Nm/A] Motor torque constant
@@ -56,8 +57,7 @@ end
 Am = ( eta_g * K_g * eta_m * k_t ) / ...
             ( r_mp * R_m );
 % Equivalent Damping
-B_eq = ( (eta_g * K_g^2 * eta_m * k_t * k_m) + (B_c * r_mp^2 * R_m) ) / ...
-            ( r_mp^2 * R_m );
+B_eq = (k_m * eta_g * K_g^2 * eta_m * k_t) / (R_m * r_mp^2) + B_c;
 % Equivalent Inertia
 J_eq = M + ( eta_g * K_g^2 * J_m ) / (r_mp^2 );
 
