@@ -12,7 +12,7 @@ dk = 0.005;        % Root-Locus: Step size
 k = 0 : dk : 46; % Root-Locus: Locus size
 x = xMin : 0;
 
-%% Root Locus
+%% Plant
 
 % Loaded from cart_Model.m
     % With Weight
@@ -39,7 +39,7 @@ title('Step Response: Open Loop')
 % Requirements
 OS_percent = 10; % [percent]
 % ts = 0.6; % [sec]
-tp = 0.15;
+tp = 1;
 
 % Mp = OS   ,   D = zeta    ,   wn = omega_n
 OS = OS_percent / 100;
@@ -87,9 +87,12 @@ phi_zD = 180 + sum(phi);
 
 % PD Zero
 z_D = omega_d / tand(phi_zD) + sigma_d;
+z_D = 20;
 
 % PD Controller
-G_PD = (s + z_D);
+% G_PD = (s + z_D);
+    tau_f = 0.001;
+    G_PD = (s + z_D) * 1/(tau_f*s + 1);
 
 % Root Locus
 figure
@@ -102,13 +105,12 @@ ylim([-yLims yLims])
 xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
-% K_PD = 0.675;
-K_PD = 20;
+% K_PD = 20;
+K_PD = 1.75;
 
+    % Pole Zero Map of PD Control
     G_CL = feedback( K_PD*G_PD * G_OL , 1, sign);
     figure
-        % rlocus(G_CL, k)
-        % title('Root Locus: Closed Loop')
     pzmap(G_CL)
     title('Pole-Zero Map: PD Control')
     hold on
@@ -120,7 +122,7 @@ K_PD = 20;
 %% PI Design - Inspired by Lösung_11.pdf
 
 % Zero Selection
-z_I = [0.1 0.3 0.6 0.9];
+z_I = [0.3 1 2 4];
 for i=1:length(z_I)
     G_PI(i) = ( s + z_I(i) ) / s;
 end
@@ -140,7 +142,7 @@ yline(1.05, '--k')
 yline(0.95, '--k')
 
 %%% Selected from Response %%%
-z_I_idx = 2;
+z_I_idx = 3;
 
 %% Combined
 
@@ -157,18 +159,18 @@ ylim([-yLims yLims])
 xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
-K_PID = 0.8;
+K_PID = 1.21;
 
 %% Controller
 
 G_C = K_PID * G_c;
+% G_C = pidtune(G_OL, 'PID');
 
 % Proportional
 G_CL = feedback( G_C*G_OL , 1, sign);
 
+% Pole Zero Map of PID Control
 figure
-    % rlocus(G_CL, k)
-    % title('Root Locus: Closed Loop')
 pzmap(G_CL)
 title('Pole-Zero Map: PID Control')
 hold on
