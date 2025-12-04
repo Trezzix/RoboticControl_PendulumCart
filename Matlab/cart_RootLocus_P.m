@@ -1,12 +1,12 @@
 clc; clear; close all;
 % Thomas Lønne Stiansen - FHV Winter Semester 2025
-    % For PI control with Root Locus on cart
+    % For P control with Root Locus on cart
 
 % Constants
 markSize = 10;
 sign = -1; % for negative feedback
-yLims = 10;
-xMin = -10;
+yLims = 9;
+xMin = -14;
 xMax = 1;
 dk = 0.005;        % Root-Locus: Step size
 k = 0 : dk : 46; % Root-Locus: Locus size
@@ -67,60 +67,21 @@ rlocus(G_OL)
 title('Root Locus: Open Loop')
 ylim([-yLims yLims])
 xlim([xMin xMax])
-sgrid(zeta, omega_n)
-
-%% PI Design - Inspired by Lösung_11.pdf
-
-% Zero Selection
-z_I = [0.1 0.3 0.5 1];
-for i = 1 : length(z_I)
-    G_PI(i) = ( s + z_I(i) ) / s;
-end
-
-% Step response of PI zeros
-figure;
-Legend = cell(length(z_I),1);
-for i = 1 : length(z_I)
-    step( feedback(G_PI(i)*G_OL, 1, -1) );
-    axis([0 100 0 2]);
-    Legend{i} = strcat('z_c = ', num2str(z_I(i)));
-    hold on;
-end
-legend(Legend, 'Location','southeast');
-title('Step Response: PI Design')
-yline(1.05, '--k')
-yline(0.95, '--k')
-
-%%% Selected from Response %%%
-z_I_idx = 2;
-
-%% PI Design - Root Locus
-
-% Root Locus
-figure
-rlocus(G_OL * G_PI(z_I_idx))
 hold on
-title('Root Locus: PI Design')
 sgrid(zeta, omega_n)
     plot(x, y1, '--k',  x, y2, '--k');
-ylim([-yLims yLims])
-xlim([xMin xMax])
 
-%%% Selected from Root-Locus %%%
-K_PI = 49;
+K_P = 60;
 
-%% Controller
-
-G_C = K_PI * G_PI(z_I_idx);
-% G_C = pidtune(G_OL, 'PID');
+%% P Control
 
 % Proportional
-G_CL = feedback( G_C*G_OL , 1, sign);
+G_CL = feedback( K_P*G_OL , 1, sign);
 
 % Pole Zero Map of PI Control
 figure
 pzmap(G_CL)
-title('Pole-Zero Map: PI Control')
+title('Pole-Zero Map: P Control')
 hold on
 sgrid(zeta, omega_n)
     plot(x, y1, '--k',  x, y2, '--k');
@@ -132,8 +93,3 @@ figure
 step(G_CL)
 stepinfo(G_CL)
 title('Step Response: Closed Loop')
-
-%% Convert to discrete with Tustin transform
-
-t_sample = 0.01;
-G_C_discrete = c2d(G_C, t_sample, 'tustin');

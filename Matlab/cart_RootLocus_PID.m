@@ -39,7 +39,7 @@ title('Step Response: Open Loop')
 % Requirements
 OS_percent = 10; % [percent]
 % ts = 0.6; % [sec]
-tp = 1;
+tp = 0.25; % [sec]
 
 % Mp = OS   ,   D = zeta    ,   wn = omega_n
 OS = OS_percent / 100;
@@ -86,7 +86,7 @@ end
 phi_zD = 180 + sum(phi);
 
 % PD Zero
-z_D = omega_d / tand(phi_zD) + sigma_d;
+z_D_calc = omega_d / tand(phi_zD) + sigma_d;
     z_D = 25;
 
 % PD Controller
@@ -184,3 +184,14 @@ figure
 step(G_CL)
 stepinfo(G_CL)
 title('Step Response: Closed Loop')
+
+%% Convert to discrete with Tustin transform
+
+G_C
+t_sample = 0.01;
+G_C_discrete = c2d(G_C, t_sample, 'tustin')
+
+%% LPF discrete
+
+dSigFilt = s/(tau_f*s+1);
+dSigFilt_discrete = c2d(dSigFilt, t_sample, 'tustin')
