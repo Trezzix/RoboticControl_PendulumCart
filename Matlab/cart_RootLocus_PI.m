@@ -82,14 +82,14 @@ figure;
 Legend = cell(length(z_I),1);
 for i = 1 : length(z_I)
     step( feedback(G_PI(i)*G_OL, 1, -1) );
-    axis([0 100 0 2]);
+    axis([0 100 0 1.8]);
     Legend{i} = strcat('z_c = ', num2str(z_I(i)));
     hold on;
 end
-legend(Legend, 'Location','southeast');
+legend(Legend, 'Location','northeast');
 title('Step Response: PI Design')
-yline(1.05, '--k')
-yline(0.95, '--k')
+% yline(1.05, '--k')
+% yline(0.95, '--k')
 
 %%% Selected from Response %%%
 z_I_idx = 2;
@@ -108,6 +108,18 @@ xlim([xMin xMax])
 
 %%% Selected from Root-Locus %%%
 K_PI = 49;
+
+%% Step response of PI zeros
+figure;
+Legend = cell(length(z_I),1);
+for i = 1 : length(z_I)
+    step( feedback(K_PI*G_PI(i)*G_OL, 1, -1) );
+    axis([0 9 0.95 1.25]);
+    Legend{i} = strcat('z_c = ', num2str(z_I(i)));
+    hold on;
+end
+legend(Legend, 'Location','northeast');
+title('Step Response: PI Design - with K_{PI}')
 
 %% Controller
 
