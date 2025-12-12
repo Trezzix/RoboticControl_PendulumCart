@@ -105,12 +105,10 @@ end
 
 % Constants for Bryson's Rule
 u_max = 10; % [V]
-x1_max = 0.3; % [m]
-x2_max = 1; % [deg]
-x3_max = 0.05; % [m/s]
-x4_max = 2; % [deg/s]
-
-% Tuning
+x1_max = 0.1; % [m]
+x2_max = deg2rad(3); % [rad]
+x3_max = 3.16; % [m/s]
+x4_max = deg2rad(180); % [rad/s]
     q1 = 1 / (x1_max^2); % [m]
     q2 = 1 / (x2_max^2); % [deg]
     q3 = 1 / (x3_max^2); % [m/s]
@@ -121,6 +119,13 @@ Q = [ q1  0  0  0 ;  % x_c   = Cart     Position
        0  0  0 q4 ]; % ̇α     = Pendulum Velocity
 R = 1 / (u_max^2);
 
+% Tuning
+Q(1,1) = Q(1,1) * 1;
+Q(2,2) = Q(2,2) * 1;
+Q(3,3) = Q(3,3) * 1;
+Q(4,4) = Q(4,4) * 1;
+R = R * 1;
+
 % Linear Quadratic Regulator
 [ K, ~, ~] = lqr(A,B, Q,R) % [ K, sol_Riccati, p_CL ]
 
@@ -129,3 +134,7 @@ R = 1 / (u_max^2);
         - Increased Q --> Larger control gain
         - Increased R --> Lower control gain
 %}
+
+%% Specifications of a second-order low-pass filter
+wcf = 2 * pi * 10.0;  % filter cutting frequency
+zetaf = 0.9;        % filter damping ratio
