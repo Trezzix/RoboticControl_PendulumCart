@@ -40,6 +40,13 @@ N_pp = 56; % [-] Number of teeth: cart position pinion
 r_pp = 1.167 /2 * K_IN2M; % [m] Position pinion radius
 P_r = 1e-2 / 6.01; % [m/teeth] Rack pitch
 T_c = 0.814; % [m] Cart travel
+    % These are from reading SIP manual: Archiv/TechResources/UserManual
+        % Using long pendulum (_p = _pl)
+M_p = 0.23; % [kg] Pendulum: Mass
+l_p = 0.3302; % [m] Pendulum: from pivot to COM
+J_p = 7.88*10^-3; % [kg*m^2] Moment of Inertia about COM
+B_p = 0.0024; % [Nm*s/rad] Pendulum: Viscous Damping Coefficient
+g = 9.81; % [m/s^2] gravitational constant
 %%%%%%%%%%%%%%%%%%%% Load parameters - Quanser %%%%%%%%%%%%%%%%%%%%%%
 if weight % with weight
     M_c = M_w + M_c2;
@@ -54,11 +61,7 @@ B_eq = (k_m * eta_g * K_g^2 * eta_m * k_t) / (R_m * r_mp^2) + B_c; % Equivalent 
 J_eq = M_c + ( eta_g * K_g^2 * J_m ) / (r_mp^2 );                  % Equivalent Inertia
 J_T = J_eq*M_p*l_p^2 + J_eq*J_p + J_p*M_p;                         % Total Inertia
 
-%% LQR Design
-
-% Set arbitrarily
-Q = eye(4);
-R = 1;
+%% State-Space
 
     A_32 = (M_p^2 * l_p^2 * g) / J_T ;
     A_33 = -B_eq * (J_p + M_p * l_p^2) / J_T ;
@@ -79,3 +82,50 @@ C = [ 1 0 0 0 ;
       0 1 0 0 ];
 D = [ 0 ;
       0 ];
+
+%%% From SIP_ABCD_eqns.m %%%
+% Actuator Dynamics
+% A(3,3) = A(3,3) - B(3)*eta_g*K_g^2*eta_m*k_t*k_m/r_mp^2/R_m;
+% A(4,3) = A(4,3) - B(4)*eta_g*K_g^2*eta_m*k_t*k_m/r_mp^2/R_m;
+% B = (eta_g*K_g*eta_m*k_t/r_mp/R_m) * B;
+%%% From SIP_ABCD_eqns.m %%%
+
+A
+B
+C
+D
+
+%% Verify controllability
+sys_rank = rank( ctrb(A,B) )
+if sys_rank < size(A,1)
+    error('[ERROR] System is not controllable!')
+end
+
+%% LQR Design
+
+% Constants for Bryson's Rule
+u_max = 10; % [V]
+x1_max = 0.3; % [m]
+x2_max = 1; % [deg]
+x3_max = 0.05; % [m/s]
+x4_max = 2; % [deg/s]
+
+% Tuning
+    q1 = 1 / (x1_max^2); % [m]
+    q2 = 1 / (x2_max^2); % [deg]
+    q3 = 1 / (x3_max^2); % [m/s]
+    q4 = 1 / (x4_max^2); % [deg/s]
+Q = [ q1  0  0  0 ;  % x_c   = Cart     Position
+       0 q2  0  0 ;  % α     = Pendulum Position
+       0  0 q3  0 ;  % ẋ_c   = Cart     Velocity
+       0  0  0 q4 ]; % ̇α     = Pendulum Velocity
+R = 1 / (u_max^2);
+
+% Linear Quadratic Regulator
+[ K, ~, ~] = lqr(A,B, Q,R) % [ K, sol_Riccati, p_CL ]
+
+%{
+    UiA Lecture:
+        - Increased Q --> Larger control gain
+        - Increased R --> Lower control gain
+%}
