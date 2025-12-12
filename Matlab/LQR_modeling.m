@@ -1,6 +1,15 @@
 clc; clear; close all;
 
+% Selection
 weight = true;
+ALPHA_MINMAX = 5; % [deg]
+XC_MINMAX = 0.3; % [m]
+
+% Calc from them
+ALPHA_MIN = -ALPHA_MINMAX;
+ALPHA_MAX = +ALPHA_MINMAX;
+XC_MIN = -XC_MINMAX;
+XC_MAX = +XC_MINMAX;
 
 %% Constants
 
@@ -21,6 +30,9 @@ K_RPM2RDPS = 1 / K_RDPS2RPM;
 K_OZ2N = 0.2780139;
 % from N to oz-force
 K_N2OZ = 1 / K_OZ2N;
+% From setup_ip02_sip.m
+K_EC = 2.274854409317804e-05;
+K_EP = 0.001533980787886;
 %%%%%%%%%%%%%%%%%%%% Load conversions - Quanser %%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%% Load parameters - Quanser %%%%%%%%%%%%%%%%%%%%%%
