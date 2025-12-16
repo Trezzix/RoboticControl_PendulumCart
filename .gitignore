@@ -1,5 +1,6 @@
 # MATLAB Workspace Files
 *.mat
+*.asv
 
 # Simulink Code Generation
 slprj/
@@ -9,3 +10,6 @@ slprj/
 
 # Simulink Cache File (build artifacts)
 *.slxc
+
+# Archiv Template given at start of project
+Archiv/

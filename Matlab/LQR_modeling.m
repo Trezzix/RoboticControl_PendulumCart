@@ -1,8 +1,8 @@
 clc; clear; close all;
 
-% Selection
+%% Selection
 weight = true;
-ALPHA_MINMAX = 5; % [deg]
+ALPHA_MINMAX = 20; % [deg]
 XC_MINMAX = 0.3; % [m]
 
 % Calc from them
