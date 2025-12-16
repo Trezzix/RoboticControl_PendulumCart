@@ -60,35 +60,31 @@ end
 B_eq = (k_m * eta_g * K_g^2 * eta_m * k_t) / (R_m * r_mp^2) + B_c; % Equivalent Damping
 J_eq = M_c + ( eta_g * K_g^2 * J_m ) / (r_mp^2 );                  % Equivalent Inertia
 J_T = J_eq*M_p*l_p^2 + J_eq*J_p + J_p*M_p;                         % Total Inertia
+    % For F_c substitution
+C_x = (eta_g * K_g^2 * k_t * k_m) / (R_m * r_mp);
+C_V = (eta_g * eta_m * K_g * k_t) / (R_m * r_mp);
 
 %% State-Space
 
-    A_32 = (M_p^2 * l_p^2 * g) / J_T ;
-    A_33 = -B_eq * (J_p + M_p * l_p^2) / J_T ;
-    A_34 = - (M_p * l_p * B_p) / J_T ;
-    A_42 = M_p * l_p * g * (J_eq + M_p) / J_T ;
-    A_43 = - (M_p * l_p * B_eq) / J_T ;
-    A_44 = - B_p * (J_eq + M_p) / J_T ;
+    A_32 = (M_p^2 * l_p^2 * g) / J_T ;              % α     \
+    A_33 = -(J_p + M_p*l_p^2)*(B_eq + C_x) / J_T ;  % ẋ_c   | eq: x¨_c
+    A_34 = - (M_p * l_p * B_p) / J_T ;              % ̇α     /__________
+    A_42 = M_p * l_p * g * (J_eq + M_p) / J_T ;     % α     \
+    A_43 = - (M_p * l_p)*(B_eq + C_x) / J_T ;       % ẋ_c   | eq: α¨
+    A_44 = - B_p * (J_eq + M_p) / J_T ;             % ̇α     /
 % State-Space from Lagrangian Mechanics - See report!
 A = [ 0   0     1     0 ;
       0   0     0     1 ;
-      0  A_32  A_33  A_34 ;
-      0  A_42  A_43  A_44 ];
+      0  A_32  A_33  A_34 ;  % x¨_c
+      0  A_42  A_43  A_44 ]; % α¨
 B = [                  0    ;
                        0    ;
-      (J_p + M_p*l_p^2)/J_T ;
-              (M_p*l_p)/J_T ];
+      (J_p + M_p*l_p^2)*C_V/J_T ;
+              (M_p*l_p)*C_V/J_T ];
 C = [ 1 0 0 0 ;
       0 1 0 0 ];
 D = [ 0 ;
       0 ];
-
-%%% From SIP_ABCD_eqns.m %%%
-% Actuator Dynamics
-% A(3,3) = A(3,3) - B(3)*eta_g*K_g^2*eta_m*k_t*k_m/r_mp^2/R_m;
-% A(4,3) = A(4,3) - B(4)*eta_g*K_g^2*eta_m*k_t*k_m/r_mp^2/R_m;
-% B = (eta_g*K_g*eta_m*k_t/r_mp/R_m) * B;
-%%% From SIP_ABCD_eqns.m %%%
 
 A
 B
@@ -96,8 +92,9 @@ C
 D
 
 %% Verify controllability
-sys_rank = rank( ctrb(A,B) )
-if sys_rank < size(A,1)
+
+C_AB = [ B , A*B , A^2*B , A^3*B ]; % UiA formula
+if rank(C_AB) ~= size(A,1)
     error('[ERROR] System is not controllable!')
 end
 
