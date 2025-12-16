@@ -13,7 +13,7 @@ XC_MAX = +XC_MINMAX;
 
 %% Constants
 
-global ALPHA_MAX ALPHA_MIN IC_ALPHA0 K_EC K_EP VMAX_AMP IMAX_AMP
+global ALPHA_MAX ALPHA_MIN K_EC K_EP 
 %%%%%%%%%%%%%%%%%%%% Load parameters - Quanser %%%%%%%%%%%%%%%%%%%%%%
 M_c2 = 0.57; % [kg] IP02 Cart mass w/3 cable connectors
 M_w = 0.37; % [kg] Cart weight
@@ -22,20 +22,12 @@ l_p = 0.3302; % [m] Pendulum: from pivot to COM
 J_p = 7.88*10^-3; % [kg*m^2] Moment of Inertia about COM
 B_p = 0.0024; % [Nm*s/rad] Pendulum: Viscous Damping Coefficient
 g = 9.81; % [m/s^2] gravitational constant
-    %%% Type of Cart Load: set to 'NO_LOAD', 'WEIGHT' %%%
-    if weight
-        IP02_LOAD_TYPE = 'WEIGHT';
-        M_c = M_w + M_c2;
-        B_c = 5.4; % [Nm*s/rad]
-    else
-        IP02_LOAD_TYPE = 'NO_LOAD';
-        M_c = M_c2;
-        B_c = 4.3; % [Nm*s/rad]
-    end
-    %%% Amplifier Type: set to 'VoltPAQ' or 'Q3'%%%
-    AMP_TYPE = 'VoltPAQ';
-    % AMP_TYPE = 'Q3';
-[ R_m, J_m, k_t, eta_m, k_m, K_g, eta_g, M_c, r_mp, ~ ] = config_ip02( IP02_LOAD_TYPE, AMP_TYPE );
+if weight
+    IP02_LOAD_TYPE = 'WEIGHT';
+else
+    IP02_LOAD_TYPE = 'NO_LOAD';
+end
+[ R_m, J_m, k_t, eta_m, k_m, K_g, eta_g, M_c, r_mp, B_c ] = config_ip02( IP02_LOAD_TYPE );
 %%%%%%%%%%%%%%%%%%%% Load parameters - Quanser %%%%%%%%%%%%%%%%%%%%%%
 
 % Calculated
