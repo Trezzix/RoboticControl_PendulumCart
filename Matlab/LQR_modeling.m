@@ -70,10 +70,10 @@ end
 %% LQR Design
 
 % Constants for Bryson's Rule
-u_max = 10; % [V]
-x1_max = 0.1; % [m]
+u_max = 7; % [V]
+x1_max = 0.17; % [m]
 x2_max = deg2rad(3); % [rad]
-x3_max = 3.16; % [m/s]
+x3_max = 0.5; % [m/s]
 x4_max = deg2rad(180); % [rad/s]
     q1 = 1 / (x1_max^2); % [m]
     q2 = 1 / (x2_max^2); % [deg]
