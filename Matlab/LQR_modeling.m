@@ -71,7 +71,7 @@ end
 
 % Constants for Bryson's Rule
 u_max = 7; % [V]
-x1_max = 0.17; % [m]
+x1_max = 0.15; % [m]
 x2_max = deg2rad(3); % [rad]
 x3_max = 0.5; % [m/s]
 x4_max = deg2rad(180); % [rad/s]
