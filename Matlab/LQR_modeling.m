@@ -71,7 +71,7 @@ end
 
 % Constants for Bryson's Rule
 u_max = 7; % [V]
-x1_max = 0.17; % [m]
+x1_max = 0.15; % [m]
 x2_max = deg2rad(3); % [rad]
 x3_max = 0.5; % [m/s]
 x4_max = deg2rad(180); % [rad/s]
@@ -84,13 +84,6 @@ Q = [ q1  0  0  0 ;  % x_c   = Cart     Position
        0  0 q3  0 ;  % ẋ_c   = Cart     Velocity
        0  0  0 q4 ]; % ̇α     = Pendulum Velocity
 R = 1 / (u_max^2);
-
-% Tuning
-Q(1,1) = Q(1,1) * 1;
-Q(2,2) = Q(2,2) * 1;
-Q(3,3) = Q(3,3) * 1;
-Q(4,4) = Q(4,4) * 1;
-R = R * 1;
 
 % Linear Quadratic Regulator
 [ K, ~, ~] = lqr(A,B, Q,R) % [ K, sol_Riccati, p_CL ]
