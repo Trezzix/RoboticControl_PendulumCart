@@ -16,8 +16,8 @@ clear all;
 % ############### USER-DEFINED IP02 with SIP CONFIGURATION ###############
 
 % if IP02: Type of Cart Load: set to 'NO_LOAD', 'WEIGHT'
- IP02_LOAD_TYPE = 'NO_LOAD';
-% IP02_LOAD_TYPE = 'WEIGHT';
+%  IP02_LOAD_TYPE = 'NO_LOAD';
+IP02_LOAD_TYPE = 'WEIGHT';
 % Type of single pendulum: set to 'LONG_24IN', 'MEDIUM_12IN'
  PEND_TYPE = 'LONG_24IN'; 
 % PEND_TYPE = 'MEDIUM_12IN'; 
